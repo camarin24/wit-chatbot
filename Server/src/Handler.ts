@@ -4,7 +4,7 @@ export interface Command {
 }
 
 export interface Handler {
-  Next(command: Command): void;
+  Next(command: Command, resolve: any): void;
   Intent: string;
   Successor: Handler;
   SetSuccessor(successor: Handler): void;

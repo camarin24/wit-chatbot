@@ -11,10 +11,11 @@ export class GreetingChain implements Handler {
     this.Intent = "greeting";
   }
 
-  Next(command: Command) {
+  Next(command: Command, resolve: any) {
     if (command.intent == this.Intent) {
+      resolve({ message: "Hola humano", data: command });
     } else {
-      this.Successor.Next(command);
+      this.Successor.Next(command, resolve);
     }
   }
 }

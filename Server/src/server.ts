@@ -4,9 +4,10 @@ const app = express();
 const bot = new Bot();
 
 app.get("/", function(req, res) {
+  console.log(req.query.message);
   bot
     .init({
-      message: "hola como estas?"
+      message: req.query.message
     })
     .then(data => {
       res.json(data);

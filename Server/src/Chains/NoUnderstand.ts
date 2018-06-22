@@ -9,5 +9,10 @@ export class NoUnderstandChain implements Handler {
     this.Intent = "";
   }
 
-  Next(command: Command) {}
+  Next(command: Command, resolve: any) {
+    resolve({
+      message: "No entiendo que es lo que quieres -.-",
+      data: command
+    });
+  }
 }

@@ -1,8 +1,10 @@
-import { Handler } from "./Handler";
+import { Handler, Command } from "./Handler";
 import { GreetingChain } from "./Chains/Greeting";
 import { NoUnderstandChain } from "./Chains/NoUnderstand";
 import { UserRequest } from "./Types/UserRequest";
 import client = require("request");
+import { OrderChain } from "./Chains/Order";
+import { HelpChain } from "./Chains/Help";
 
 export class Bot {
   Chain: Handler;
@@ -13,8 +15,12 @@ export class Bot {
 
   BuildChain() {
     const greeting = new GreetingChain();
+    const order = new OrderChain();
+    const help = new HelpChain();
     const finish = new NoUnderstandChain();
-    greeting.SetSuccessor(finish);
+    greeting.SetSuccessor(order);
+    order.SetSuccessor(help);
+    help.SetSuccessor(finish);
     this.Chain = greeting;
   }
 
@@ -32,13 +38,26 @@ export class Bot {
           if (err) {
             return console.log(err);
           }
-          resolve(body);
+          this.Chain.Next(this.ProcessCommand(body), resolve);
         }
       );
     });
   }
 
-  ProcessCommand(res: any) {
-    console.log(JSON.stringify(res));
+  ProcessCommand(body: any) {
+    const { entities } = body;
+
+    const response: Command = { data: undefined, intent: "" };
+
+    if (entities["intent"]) {
+      response.data = entities;
+      if (entities["intent"][0]) {
+        response.intent = entities["intent"][0].value;
+      } else {
+        response.intent = "";
+      }
+    }
+    console.log(JSON.stringify(response));
+    return response;
   }
 }
