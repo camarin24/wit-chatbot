@@ -3,8 +3,8 @@ import { GreetingChain } from "./Chains/Greeting";
 import { NoUnderstandChain } from "./Chains/NoUnderstand";
 import { UserRequest } from "./Types/UserRequest";
 import client = require("request");
-import { OrderChain } from "./Chains/Order";
 import { HelpChain } from "./Chains/Help";
+import { ChangeStateChain } from "./Chains/ChangeState";
 
 export class Bot {
   Chain: Handler;
@@ -15,24 +15,24 @@ export class Bot {
 
   BuildChain() {
     const greeting = new GreetingChain();
-    const order = new OrderChain();
+    const changeState = new ChangeStateChain();
     const help = new HelpChain();
     const finish = new NoUnderstandChain();
-    greeting.SetSuccessor(order);
-    order.SetSuccessor(help);
+    greeting.SetSuccessor(changeState);
+    changeState.SetSuccessor(help);
     help.SetSuccessor(finish);
     this.Chain = greeting;
   }
 
   init(req: UserRequest) {
-    const url = `https://api.wit.ai/message?v=20180412&q=${req.message}`;
+    const url = `https://api.wit.ai/message?v=20180626&q=${req.message}`;
     return new Promise((resolve, reject) => {
       client(
         url,
         {
           json: true,
           method: "POST",
-          headers: { Authorization: "Bearer LFEMMCZEH6PSVCK6JIR3QN7LV6EHMKJW" }
+          headers: { Authorization: "Bearer GNYIFHURQNFOSG5HCBPTWXE747QBE3VH" }
         },
         (err, res, body) => {
           if (err) {
